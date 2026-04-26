@@ -2,8 +2,11 @@ import "./globals.css";
 import { ThemeProvider } from "../components/ThemeContext";
 
 export const metadata = {
-  title: "SmartHPP - Solusi Keuangan UMKM",
-  description: "Sistem manajemen keuangan cerdas untuk UMKM.",
+  title: "SmartHPP - AI Integrated Financial Analyst",
+  description: "Solusi Manajemen HPP dan Credit Scoring UMKM",
+  other: {
+    "dicoding:email": "apriliantinabila04@gmail.com",
+  },
 };
 
 export default function RootLayout({ children }) {
