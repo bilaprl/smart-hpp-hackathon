@@ -31,16 +31,14 @@ export default function Modals({
   useEffect(() => {
     const fetchData = () => {
       if (activeModal === "profile") {
-        // Data simulasi profil (Bisa diedit oleh pengguna di UI)
         setProfileData({
-          name: "Nabila",
-          email: "nabila@smarthpp.com",
-          initial: "N",
+          name: "Kopi Kenangan",
+          email: "user@smarthpp.com",
+          initial: "K",
         });
       }
 
       if (activeModal === "transaction") {
-        // Data simulasi produk yang selaras dengan data di HppSection
         setProductList([
           {
             id: "mock-1",
@@ -56,31 +54,20 @@ export default function Modals({
     fetchData();
   }, [activeModal]);
 
-  // FUNGSI SIMPAN TRANSAKSI (SIMULASI FRONTEND)
   const handleSaveTransaction = () => {
     if (!selectedProduct || !saleQty) return alert("Isi semua data dulu ya!");
-
     setIsSaving(true);
-
-    // Simulasi proses penyimpanan ke server
     setTimeout(() => {
       alert("Penjualan Berhasil Dicatat (Mode Prototipe)! 🚀");
-
-      // Reset form
       setSaleQty("");
       setSelectedProduct("");
       setIsSaving(false);
       closeModal();
-
-      // Catatan: window.location.reload() dihilangkan karena
-      // ini adalah prototipe lokal tanpa database. Reload akan menghapus state.
     }, 600);
   };
 
-  // FUNGSI UPDATE PROFIL (SIMULASI FRONTEND)
   const handleUpdateProfile = () => {
     setLoading(true);
-
     setTimeout(() => {
       alert("Profil diperbarui (Mode Prototipe)! 🚀");
       setLoading(false);
@@ -98,12 +85,14 @@ export default function Modals({
         await doRegister(email, password);
         setIsRegisterMode(false);
       } else {
+        // Karena ini mode dummy, kita bisa langsung bypass error dari parent jika ada
         await doLogin(email, password);
+        closeModal(); // Pastikan modal tertutup setelah klik login
       }
     } catch (error) {
-      alert(
-        `Gagal ${isRegisterMode ? "Mendaftar" : "Masuk"}: ${error.message}`,
-      );
+      // Jika parent doLogin gagal (misal karena supabase dimatikan), paksa login sukses di UI
+      console.log("Bypass login error for prototype mode:", error.message);
+      closeModal();
     }
   };
 
@@ -120,7 +109,7 @@ export default function Modals({
           >
             <span className="material-icons-round">close</span>
           </button>
-          <div className="text-center mb-8">
+          <div className="text-center mb-6">
             <h2 className="font-montserrat font-bold text-2xl mb-1 text-smart-text">
               {isRegisterMode
                 ? "Buat Akun Baru."
@@ -129,9 +118,26 @@ export default function Modals({
             <p className="text-sm text-smart-text-muted">
               {isRegisterMode
                 ? "Daftar untuk mulai mengelola keuangan bisnismu."
-                : "Masuk untuk menyimpan data finansialmu."}
+                : "Masuk untuk melihat fitur AI Credit Scoring."}
             </p>
           </div>
+
+          {/* BANNER KHUSUS JURI (Hanya muncul saat mode login) */}
+          {!isRegisterMode && (
+            <div className="bg-smart-lime/10 border border-smart-lime/30 p-3 rounded-xl mb-6 flex items-start gap-3">
+              <span className="material-icons-round text-smart-lime text-xl">
+                verified_user
+              </span>
+              <p className="text-xs text-smart-text leading-relaxed">
+                <span className="font-bold text-smart-lime">
+                  Mode Evaluasi:
+                </span>{" "}
+                Kredensial demo sudah terisi otomatis. Silakan langsung klik
+                tombol masuk.
+              </p>
+            </div>
+          )}
+
           <form onSubmit={handleSubmitForm} className="space-y-4">
             <div>
               <label className="block text-xs font-semibold text-smart-text-muted mb-1">
@@ -139,6 +145,7 @@ export default function Modals({
               </label>
               <input
                 type="email"
+                defaultValue={!isRegisterMode ? "user@smarthpp.com" : ""}
                 placeholder="contoh@email.com"
                 className="w-full bg-smart-bg border border-smart-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-smart-lime text-smart-text transition-colors"
                 required
@@ -150,6 +157,7 @@ export default function Modals({
               </label>
               <input
                 type="password"
+                defaultValue={!isRegisterMode ? "demo123456" : ""}
                 placeholder="Minimal 6 karakter"
                 minLength="6"
                 className="w-full bg-smart-bg border border-smart-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-smart-lime text-smart-text transition-colors"
@@ -158,12 +166,24 @@ export default function Modals({
             </div>
             <button
               type="submit"
-              className="w-full bg-smart-lime text-smart-dark font-bold py-3 rounded-xl hover:bg-smart-lime-hover transition-colors mt-2"
+              className="w-full bg-smart-lime text-smart-dark font-bold py-3 rounded-xl hover:scale-[1.02] transition-transform mt-2 shadow-lg"
             >
-              {isRegisterMode ? "Daftar Sekarang" : "Masuk Sekarang"}
+              {isRegisterMode
+                ? "Daftar Sekarang"
+                : "Masuk Sekarang (Akses Demo)"}
             </button>
           </form>
-          {/* ... tombol google ... */}
+
+          <div className="mt-6 text-center">
+            <button
+              onClick={() => setIsRegisterMode(!isRegisterMode)}
+              className="text-xs text-smart-text-muted hover:text-smart-lime transition-colors"
+            >
+              {isRegisterMode
+                ? "Sudah punya akun? Masuk di sini"
+                : "Belum punya akun? Daftar dummy"}
+            </button>
+          </div>
         </div>
       )}
 
@@ -180,7 +200,7 @@ export default function Modals({
             <div className="w-20 h-20 bg-smart-lime text-smart-dark rounded-full flex items-center justify-center text-3xl font-bold mb-3 shadow-md italic">
               {profileData.initial}
             </div>
-            <h3 className="font-montserrat font-bold text-xl text-smart-text">
+            <h3 className="font-montserrat font-bold text-xl text-smart-text text-center">
               {profileData.name}
             </h3>
           </div>
