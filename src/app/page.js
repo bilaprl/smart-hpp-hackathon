@@ -30,26 +30,22 @@ export default function Home() {
   const openModal = (modalName) => setActiveModal(modalName);
   const closeModal = () => setActiveModal(null);
 
-  // --- FUNGSI AUTENTIKASI DUMMY (MOCK AUTH) ---
-  const dummyEmail = "nabila@smarthpp.com";
-  const dummyPassword = "password123";
+ // --- FUNGSI AUTENTIKASI DUMMY (SINKRON DENGAN MODALS.JSX) ---
+  const dummyEmail = "user@smarthpp.com";
+  const dummyPassword = "demo123456";
 
   const doLogin = async (email, password) => {
-    // Simulasi delay jaringan agar terasa nyata
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    if (email === dummyEmail && password === dummyPassword) {
+    if (email.trim() === dummyEmail && password === dummyPassword) {
       setIsLoggedIn(true);
-      localStorage.setItem("smarthpp_session", "true"); // Simpan sesi lokal
+      localStorage.setItem("smarthpp_session", "true"); 
       closeModal();
 
-      // Otomatis arahkan ke dashboard setelah login dari landing
-      if (currentView === "landing") {
-        navigate("dashboard");
-      }
+      navigate("dashboard");
     } else {
       throw new Error(
-        `Email atau password salah! (Hint: ${dummyEmail} / ${dummyPassword})`,
+        `Email atau password salah! Gunakan akun demo: ${dummyEmail} / ${dummyPassword}`,
       );
     }
   };
@@ -59,7 +55,6 @@ export default function Home() {
     alert(
       "Berhasil mendaftar (Mode Prototipe)! Silakan masuk dengan akun yang baru dibuat.",
     );
-    // Dalam mode prototipe, pengguna bisa langsung diarahkan untuk login
   };
 
   const doGoogleLogin = async () => {
